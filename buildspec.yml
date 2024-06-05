@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 611263670956.dkr.ecr.eu-central-1.amazonaws.com
+  build:
+    commands:
+      - echo Building the Docker image...
+      - pwd; ls -l ; cd 3__Local_Models/LLAMA-OPT; pwd ; ls -l;
+      - docker build -t llama7b-optimized:v1 .
+      - docker tag llama7b-optimized:v1 611263670956.dkr.ecr.eu-central-1.amazonaws.com/llama7b-optimized:v1
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push 611263670956.dkr.ecr.eu-central-1.amazonaws.com/llama7b-optimized:v1
+
+artifacts:
+  files: '**/*'
